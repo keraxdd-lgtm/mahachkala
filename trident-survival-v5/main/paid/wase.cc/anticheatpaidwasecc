@@ -240,7 +240,7 @@ local rawget = rawget
 ui.tabs = {
     combat = ui.window:AddTab('combat'),
     visuals = ui.window:AddTab('visuals'),
-    misc = ui.window:AddTab('misc'),
+    misc(скоро/coming soon) = ui.window:AddTab('misc'),
     config = ui.window:AddTab('config'),
 }
 ui.box = {
@@ -248,9 +248,6 @@ ui.box = {
     esp = ui.tabs.visuals:AddLeftTabbox(),
     cheatvis = ui.tabs.visuals:AddRightTabbox(),
     world = ui.tabs.visuals:AddRightTabbox(),
-    move = ui.tabs.misc:AddLeftTabbox(),
-    atvfly = ui.tabs.misc:AddLeftTabbox(),
-    misc = ui.tabs.misc:AddRightTabbox(),
     themeconfig = ui.tabs.config:AddLeftGroupbox('theme config'),
 }
 
