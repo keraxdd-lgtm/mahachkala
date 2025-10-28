@@ -240,7 +240,6 @@ local rawget = rawget
 ui.tabs = {
     combat = ui.window:AddTab('combat'),
     visuals = ui.window:AddTab('visuals'),
-    misc-coming soon = ui.window:AddTab('misc'),
     config = ui.window:AddTab('config'),
 }
 ui.box = {
