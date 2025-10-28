@@ -2165,9 +2165,6 @@ do
         end
     end))
 end
-loadswimhubfile("chat_spam.lua")(cheat.Library, ui.box.misc:AddTab("chat spam"), function(word)
-    trident.tcp:FireServer(23, word, "Global")
-end, 25, 100)
 
 ui.box.themeconfig:AddToggle('keybindshoww', {Text = 'show keybinds',Default = false,Callback = function(first)cheat.Library.KeybindFrame.Visible = first end})
 cheat.ThemeManager:SetOptionsTEMP(cheat.Options, cheat.Toggles)
