@@ -1826,23 +1826,6 @@ do
 end
 
 do
-                    bottom.CFrame = oldbmcf
-                top.CFrame = oldtpcf
-                middle.AssemblyLinearVelocity = direction * nigasilent
-                top.AssemblyLinearVelocity = direction * nigasilent
-                bottom.AssemblyLinearVelocity = direction * nigasilent
-            end
-
-            wtfsilent = wtfsilent + delta
-
-            if wtfsilent > 1.5 then
-                trident.tcp:FireServer(3, false)
-                trident.tcp:FireServer(2, false)
-                slidin = false
-                wtfsilent = 0
-            end
-        else
-
     
     local mvb = ui.box.atvfly:AddTab('atv fly')
     local carfly_enabled, speed, accl, upspeed = false, 55, 100, 15
