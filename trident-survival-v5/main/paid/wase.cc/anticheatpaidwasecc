@@ -927,10 +927,10 @@ do
         return new_instance
     end
 
-    local magicbullet = ui.box.aimbot:AddTab("player redirection")
-    magicbullet:AddToggle('aimbot_ultraexploit',{Text = 'player redirection',Default = false,Callback = function(v)
+    local magicbullet = ui.box.aimbot:AddTab("silent aim")
+    magicbullet:AddToggle('aimbot_ultraexploit',{Text = 'silent aim',Default = false,Callback = function(v)
         domagic = v
-    end}):AddKeyPicker('aimbot_ultraexploit_bind', {Default = 'None',SyncToggleState = true,Mode = 'Toggle',Text = 'player redirection',NoUI = false})
+    end}):AddKeyPicker('aimbot_ultraexploit_bind', {Default = 'None',SyncToggleState = true,Mode = 'Toggle',Text = 'silent aim',NoUI = false})
     magicbullet:AddToggle('aimbot_ultraexploit_snapline', {Text = 'snapline to target',Default = false,Callback = function(Value)
         snapline = Value
     end})
