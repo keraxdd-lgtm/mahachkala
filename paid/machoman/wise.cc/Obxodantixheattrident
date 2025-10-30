@@ -664,4 +664,202 @@ end
 local speedHackEnabled = false
 local speedHackConnection = nil
 local currentSpeed = 16
-  
+ 
+local SpeedSlider = LocalTab:CreateSlider({
+    Name = "WalkSpeed",
+    Range = {16, 100},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 16,
+    Flag = "SpeedSlider",
+    Callback = function(Value)
+        local player = game:GetService("Players").LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        currentSpeed = Value
+        
+        if speedHackConnection then
+            speedHackConnection:Disconnect()
+            speedHackConnection = nil
+        end
+        
+        speedHackEnabled = true
+        speedHackConnection = game:GetService("RunService").Stepped:Connect(function()
+            if humanoid and humanoid.Parent then
+                humanoid.WalkSpeed = currentSpeed
+            end
+        end)
+    end,
+})
+
+local jumpPowerEnabled = false
+local jumpPowerValue = 50
+
+local function updateJumpPower()
+    if not jumpPowerEnabled then return end
+    
+    local character = LocalPlayer.Character
+    if not character then return end
+    
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    if humanoid then
+        humanoid.JumpPower = jumpPowerValue
+    end
+end
+
+local JumpPowerToggle = LocalTab:CreateToggle({
+    Name = "Jump Power",
+    CurrentValue = false,
+    Flag = "JumpPowerToggle",
+    Callback = function(Value)
+        jumpPowerEnabled = Value
+        if Value then
+            updateJumpPower()
+        end
+        print("Jump Power: " .. (Value and "ON" or "OFF"))
+    end,
+})
+
+local JumpPowerSlider = LocalTab:CreateSlider({
+    Name = "Jump Height",
+    Range = {50, 100},
+    Increment = 5,
+    Suffix = "Power",
+    CurrentValue = jumpPowerValue,
+    Flag = "JumpPowerSlider",
+    Callback = function(Value)
+        jumpPowerValue = Value
+        if jumpPowerEnabled then
+            updateJumpPower()
+        end
+    end,
+})
+
+LocalPlayer.CharacterAdded:Connect(function(character)
+    if jumpPowerEnabled then
+        wait(0.5)
+        updateJumpPower()
+    end
+end)
+
+RunService.Heartbeat:Connect(function()
+    if jumpPowerEnabled then
+        updateJumpPower()
+    end
+end)
+
+if jumpPowerEnabled then
+    updateJumpPower()
+end
+
+local thirdPersonEnabled = false
+local defaultZoom = 12.5
+local thirdPersonConnection = nil
+--- local | third person
+local ThirdPersonToggle = LocalTab:CreateToggle({
+    Name = "ThirdPerson (Stable)",
+    Callback = function()
+        thirdPersonEnabled = not thirdPersonEnabled
+        local player = game:GetService("Players").LocalPlayer
+        
+        if thirdPersonEnabled then
+            if thirdPersonConnection then
+                thirdPersonConnection:Disconnect()
+            end
+            
+            thirdPersonConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                if player then
+                    player.CameraMode = Enum.CameraMode.Classic
+                    player.CameraMaxZoomDistance = defaultZoom
+                    player.CameraMinZoomDistance = defaultZoom
+                end
+            end)
+        else
+            if thirdPersonConnection then
+                thirdPersonConnection:Disconnect()
+                thirdPersonConnection = nil
+            end
+            player.CameraMode = Enum.CameraMode.LockFirstPerson
+            player.CameraMaxZoomDistance = 0.5
+            player.CameraMinZoomDistance = 0.5
+        end
+    end,
+})
+
+local CameraZoomSlider = LocalTab:CreateSlider({
+    Name = "Camera Distance (Stable)",
+    Range = {5, 25},
+    Increment = 0.5,
+    Suffix = "Studs",
+    CurrentValue = 12.5,
+    Flag = "CameraZoomSlider",
+    Callback = function(Value)
+        local player = game:GetService("Players").LocalPlayer
+        defaultZoom = Value
+        
+        if thirdPersonEnabled then
+            player.CameraMaxZoomDistance = Value
+            player.CameraMinZoomDistance = Value
+        end
+    end,
+})
+
+local transparencyEnabled = false
+local transparencyValue = 0.7
+local transparencyConnection = nil
+
+local TransparencyButton = LocalTab:CreateButton({
+    Name = "Local Transparency (BROKEN)",
+    Callback = function()
+        transparencyEnabled = not transparencyEnabled
+        local player = game:GetService("Players").LocalPlayer
+        
+        local function setTransparency(model, value)
+            for _, part in pairs(model:GetDescendants()) do
+                if part:IsA("BasePart") then
+                    part.Transparency = value
+                elseif part:IsA("Decal") or part:IsA("Texture") then
+                    part.Transparency = value
+                elseif part:IsA("ParticleEmitter") then
+                    part.Transparency = NumberSequence.new(value)
+                end
+            end
+            
+            for _, cloth in pairs(model:GetChildren()) do
+                if cloth:IsA("Shirt") or cloth:IsA("Pants") or 
+                   cloth:IsA("ShirtGraphic") or cloth:IsA("Accessory") or
+                   cloth:IsA("Hat") then
+                    for _, part in pairs(cloth:GetDescendants()) do
+                        if part:IsA("BasePart") then
+                            part.Transparency = value
+                        elseif part:IsA("Decal") or part:IsA("Texture") then
+                            part.Transparency = value
+                        end
+                    end
+                end
+            end
+        end
+        
+        if transparencyEnabled then
+            if transparencyConnection then
+                transparencyConnection:Disconnect()
+            end
+            
+            transparencyConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                local character = player.Character
+                if character then
+                    setTransparency(character, transparencyValue)
+                end
+            end)
+        else
+            if transparencyConnection then
+                transparencyConnection:Disconnect()
+                transparencyConnection = nil
+            end
+            local character = player.Character
+            if character then
+                setTransparency(character, 0)
+            end
+        end
+    end,
+}) 
