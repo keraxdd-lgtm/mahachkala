@@ -863,3 +863,82 @@ local TransparencyButton = LocalTab:CreateButton({
         end
     end,
 }) 
+-- local | transparency
+local TransparencySlider = LocalTab:CreateSlider({
+    Name = "Transparency (broken)",
+    Range = {0, 1},
+    Increment = 0.1,
+    Suffix = "Alpha",
+    CurrentValue = 0.7,
+    Flag = "TransparencySlider",
+    Callback = function(Value)
+        transparencyValue = Value
+    end,
+})
+
+local spinEnabled = false
+local spinConnection = nil
+local spinSpeed = 10
+-- local | spinbot
+local SpinToggle = LocalTab:CreateToggle({
+    Name = "Spinbot",
+    Callback = function()
+        spinEnabled = not spinEnabled
+        local player = game:GetService("Players").LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
+        local humanoid = character:WaitForChild("Humanoid")
+        
+        humanoid.AutoRotate = not spinEnabled
+        
+        if spinEnabled then
+            local spinForce = Instance.new("BodyAngularVelocity")
+            spinForce.Name = "SpinForce"
+            spinForce.AngularVelocity = Vector3.new(0, spinSpeed, 0)
+            spinForce.MaxTorque = Vector3.new(0, math.huge, 0)
+            spinForce.Parent = character.HumanoidRootPart
+            
+            if spinConnection then spinConnection:Disconnect() end
+            
+            spinConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                if character and character:FindFirstChild("HumanoidRootPart") then
+                    local spinForce = character.HumanoidRootPart:FindFirstChild("SpinForce")
+                    if spinForce then
+                        spinForce.AngularVelocity = Vector3.new(0, spinSpeed, 0)
+                    end
+                end
+            end)
+            
+            character.Humanoid.Died:Connect(function()
+                if spinEnabled then
+                    spinEnabled = false
+                    if spinConnection then
+                        spinConnection:Disconnect()
+                        spinConnection = nil
+                    end
+                end
+            end)
+        else
+            if spinConnection then
+                spinConnection:Disconnect()
+                spinConnection = nil
+            end
+            
+            local spinForce = character.HumanoidRootPart:FindFirstChild("SpinForce")
+            if spinForce then spinForce:Destroy() end
+            
+            humanoid.AutoRotate = true
+        end
+    end,
+})
+
+local SpinSpeedSlider = LocalTab:CreateSlider({
+    Name = "Spin Speed",
+    Range = {1, 50},
+    Increment = 1,
+    Suffix = "Speed",
+    CurrentValue = 10,
+    Flag = "SpinSpeedSlider",
+    Callback = function(Value)
+        spinSpeed = Value
+    end,
+})
