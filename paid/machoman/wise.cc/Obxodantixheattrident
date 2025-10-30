@@ -1,11 +1,11 @@
---РїРµСЂРµРјРµРЅРЅС‹Рµ
+--Linrs
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
----РіСѓРёС€РєР°
+---Main
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 local Window = Rayfield:CreateWindow({
