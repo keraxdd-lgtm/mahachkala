@@ -625,4 +625,43 @@ Players.PlayerAdded:Connect(function(player)
     end)
 end)
 
-Players.PlayerRemoving:Connect(fu
+Players.PlayerRemoving:Connect(function(player)
+    removePlayerESP(player.Name)
+end)
+
+local function setupRespawnDetection()
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer then
+            local function trackCharacter()
+                local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+                if humanoid then
+                    humanoid.Died:Connect(function()
+                        removePlayerESP(player.Name)
+                        player.CharacterAdded:Wait()
+                        wait(1)
+                        if espEnabled then
+                            espHighlights[player.Name] = createHighlight(player)
+                        end
+                    end)
+                end
+            end
+            
+            if player.Character then
+                trackCharacter()
+            end
+            player.CharacterAdded:Connect(trackCharacter)
+        end
+    end
+end
+
+setupRespawnDetection()
+
+if espEnabled then
+    startESPUpdate()
+end
+
+---local | speedhack
+local speedHackEnabled = false
+local speedHackConnection = nil
+local currentSpeed = 16
+  
